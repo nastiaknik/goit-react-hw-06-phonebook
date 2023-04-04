@@ -6,7 +6,6 @@ import { RiDeleteBinLine } from 'react-icons/ri';
 import { IoIosCall } from 'react-icons/io';
 import { BsStar, BsStarFill } from 'react-icons/bs';
 import { getInitials } from '../../utils/getInitials';
-import { getRandomColor } from '../../utils/getRandomColor';
 import {
   TableRow,
   Avatar,
@@ -56,7 +55,16 @@ export const ContactItem = ({ contacts }) => {
     return (
       <TableRow key={contact.id}>
         <NameCeil>
-          <Avatar style={getRandomColor()}>{getInitials(contact.name)}</Avatar>
+          <Avatar
+            style={
+              contact.colors || {
+                color: 'white',
+                backgroundColor: 'green',
+              }
+            }
+          >
+            {getInitials(contact.name)}
+          </Avatar>
           {contact.name}
         </NameCeil>
         <NumberCeil>{contact.number}</NumberCeil>
@@ -93,6 +101,10 @@ ContactItem.propTypes = {
       number: PropTypes.string.isRequired,
       id: PropTypes.string.isRequired,
       favorite: PropTypes.bool.isRequired,
+      colors: PropTypes.shape({
+        color: PropTypes.string.isRequired,
+        backgroundColor: PropTypes.string.isRequired,
+      }),
     })
   ),
 };

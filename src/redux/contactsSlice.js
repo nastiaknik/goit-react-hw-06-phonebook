@@ -1,4 +1,5 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { getRandomColor } from '../utils/getRandomColor';
 
 const contactsInitialState = [];
 
@@ -11,7 +12,15 @@ const contactsSlice = createSlice({
         state.push(action.payload);
       },
       prepare(name, number) {
-        return { payload: { name, number, id: nanoid(6), favorite: false } };
+        return {
+          payload: {
+            name,
+            number,
+            id: nanoid(6),
+            favorite: false,
+            colors: getRandomColor(),
+          },
+        };
       },
     },
     deleteContact(state, action) {

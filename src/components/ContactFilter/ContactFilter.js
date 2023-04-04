@@ -1,8 +1,13 @@
-import PropTypes from 'prop-types';
 import { FiSearch } from 'react-icons/fi';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFilter } from '../../redux/filterSlice';
+import { getFilter } from '../../redux/selectors';
 import { FilterContainer, FilterInput } from './ContactFilter.styled';
 
-export const ContactFilter = ({ onFilter, value }) => {
+export const ContactFilter = () => {
+  const dispatch = useDispatch();
+  const filter = useSelector(getFilter);
+
   return (
     <FilterContainer>
       <label htmlFor="filter">
@@ -11,16 +16,11 @@ export const ContactFilter = ({ onFilter, value }) => {
       <FilterInput
         id="filter"
         type="text"
-        value={value}
-        onChange={onFilter}
+        onChange={event => dispatch(setFilter(event.target.value))}
+        value={filter}
         name="filter"
         placeholder="Search contacts"
       />
     </FilterContainer>
   );
-};
-
-ContactFilter.propTypes = {
-  onFilter: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
 };

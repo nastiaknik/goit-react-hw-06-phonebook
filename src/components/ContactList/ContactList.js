@@ -1,11 +1,42 @@
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { getContacts, getFilter } from '../../redux/selectors';
+import { toast } from 'react-toastify';
 import { ContactItem } from '../ContactItem/ContactItem';
-import { Table /* TableHead */ } from './ContactList.styled';
+import { Table, TableHead } from './ContactList.styled';
 
-export const ContactList = ({ contacts, onDelete, onFavorite, favourites }) => {
+export const ContactList = () => {
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+
+  const handleFilterContact = () => {
+    if (
+      contacts.filter(contact => {
+        return (
+          contact.name.toLowerCase().includes(filter.toLowerCase().trim()) ||
+          contact.number.includes(filter.trim())
+        );
+      }).length === 0
+    ) {
+      toast.error('Sorry, there are no contact matching your search :(', {
+        toastId: 'dont-duplicate-pls',
+      });
+    }
+
+    return contacts
+      .filter(contact => {
+        return (
+          contact.name.toLowerCase().includes(filter.toLowerCase().trim()) ||
+          contact.number.includes(filter.trim())
+        );
+      })
+      .sort((firstContact, secondContact) =>
+        firstContact.name.localeCompare(secondContact.name)
+      );
+  };
+
   return (
     <Table>
-      {/* <thead>
+      <thead>
         <tr>
           <TableHead>Name</TableHead>
           <TableHead>Phone number</TableHead>
@@ -14,28 +45,10 @@ export const ContactList = ({ contacts, onDelete, onFavorite, favourites }) => {
             <span> {contacts.length === 1 ? 'contact' : 'contacts'}</span>
           </TableHead>
         </tr>
-      </thead> */}
+      </thead>
       <tbody>
-        <ContactItem
-          contacts={contacts}
-          onDelete={onDelete}
-          onFavorite={onFavorite}
-          favourites={favourites}
-        />
+        <ContactItem contacts={handleFilterContact()} />
       </tbody>
     </Table>
   );
-};
-
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-    })
-  ),
-  onDelete: PropTypes.func.isRequired,
-  onFavorite: PropTypes.func.isRequired,
-  favourites: PropTypes.array.isRequired,
 };

@@ -1,6 +1,9 @@
-import PropTypes from 'prop-types';
 import { Formik } from 'formik';
-import { nanoid } from 'nanoid';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { getContacts } from '../../redux/selectors';
+import { addContact } from 'redux/contactsSlice';
 import {
   InputContainer,
   Button,
@@ -10,13 +13,47 @@ import {
   /* ErrorMessage, */
 } from './ContactForm.styled';
 
-export const ContactForm = ({ onSubmit }) => {
+export const ContactForm = () => {
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
+
   const handleSubmit = (values, actions) => {
     const contact = {
-      id: nanoid(6),
-      ...values,
+      name: values.name,
+      number: values.number,
     };
-    onSubmit(contact);
+
+    const contactExists = contacts.some(item => {
+      return item.name === contact.name;
+    });
+    if (contactExists) {
+      toast.warning(
+        <p>
+          Contact <span style={{ color: 'orange' }}>{contact.name}</span>{' '}
+          already exist!
+        </p>
+      );
+      return;
+    }
+    const numberExists = contacts.some(item => {
+      return item.number === contact.number;
+    });
+    if (numberExists) {
+      toast.warning(
+        <p>
+          Number <span style={{ color: 'orange' }}>{contact.number}</span> is
+          already in base!
+        </p>
+      );
+      return;
+    }
+
+    dispatch(addContact(contact.name, contact.number));
+    toast.success(
+      <p>
+        Contact <span style={{ color: 'green' }}>{contact.name}</span> added!
+      </p>
+    );
     actions.resetForm();
   };
 
@@ -62,8 +99,4 @@ export const ContactForm = ({ onSubmit }) => {
       }}
     </Formik>
   );
-};
-
-ContactForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };

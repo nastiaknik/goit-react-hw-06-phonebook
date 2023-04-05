@@ -18,7 +18,7 @@ export const Label = styled.label`
 export const InputContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   gap: 10px;
 `;
 
@@ -31,6 +31,10 @@ export const StyledField = styled(Field)`
   font-size: 16px;
   :focus {
     outline: 1px solid #7286d3;
+  }
+
+  &.error {
+    border-color: tomato;
   }
 `;
 
@@ -54,4 +58,12 @@ export const Button = styled.button`
 
 export const LabelContainer = styled.div`
   position: relative;
+`;
+
+export const Error = styled.span`
+  display: block;
+  color: tomato;
+  text-align: start;
+  width: 230px;
+  font-size: 16px;
 `;

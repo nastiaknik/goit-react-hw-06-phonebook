@@ -11,4 +11,13 @@ export const TableHead = styled.th`
   font-size: 16px;
   color: black;
   font-weight: 400;
+  width: 153px;
+  max-height: 50px;
+
+  :not(:last-child) {
+    border-right: 2px solid #e5e0ff;
+  }
+
+  border-top: 2px solid #e5e0ff;
+  border-bottom: 2px solid #e5e0ff;
 `;

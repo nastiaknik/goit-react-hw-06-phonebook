@@ -1,6 +1,9 @@
-import { Formik } from 'formik';
-import { useDispatch } from 'react-redux';
+import { Formik, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import 'yup-phone-lite';
 import { toast } from 'react-toastify';
+import { BiErrorCircle } from 'react-icons/bi';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { getContacts } from '../../redux/selectors';
 import { addContact } from 'redux/contactsSlice';
@@ -10,8 +13,20 @@ import {
   StyledField,
   LabelContainer,
   Form,
-  /* ErrorMessage, */
+  Error,
 } from './ContactForm.styled';
+
+const ContactSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, 'Name is too short!')
+    .max(30, 'Name is too long!')
+    .required('Name is required!')
+    .label('Name'),
+  number: Yup.string()
+    .phone('UA', 'Please provide a valid phone number!')
+    .required('Number is required!')
+    .label('Number'),
+});
 
 export const ContactForm = () => {
   const contacts = useSelector(getContacts);
@@ -58,7 +73,11 @@ export const ContactForm = () => {
   };
 
   return (
-    <Formik initialValues={{ name: '', number: '' }} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={{ name: '', number: '' }}
+      onSubmit={handleSubmit}
+      validationSchema={ContactSchema}
+    >
       {props => {
         return (
           <Form>
@@ -69,27 +88,43 @@ export const ContactForm = () => {
                   id="name"
                   type="text"
                   name="name"
-                  pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                  title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                   required
                   placeholder="Anastasia Knihnitska"
                   value={props.values.name}
                   onChange={props.handleChange}
-                />
+                  className={
+                    props.touched.name && props.errors.name ? 'error' : ''
+                  }
+                />{' '}
+                <ErrorMessage name="name">
+                  {msg => (
+                    <Error>
+                      <BiErrorCircle /> {msg}
+                    </Error>
+                  )}
+                </ErrorMessage>
               </LabelContainer>
               <LabelContainer>
-                <label htmlFor="number">Number</label>
+                <label htmlFor="number">Number</label>{' '}
                 <StyledField
                   id="number"
                   type="tel"
                   name="number"
-                  pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-                  title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
                   required
                   placeholder="+38 000 000 00 00"
                   value={props.values.number}
                   onChange={props.handleChange}
+                  className={
+                    props.touched.number && props.errors.number ? 'error' : ''
+                  }
                 />
+                <ErrorMessage name="number">
+                  {msg => (
+                    <Error>
+                      <BiErrorCircle /> {msg}
+                    </Error>
+                  )}
+                </ErrorMessage>
               </LabelContainer>
             </InputContainer>
 

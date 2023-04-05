@@ -52,8 +52,6 @@ export const TableRow = styled.tr`
 
 export const NumberCeil = styled.td`
   padding: 10px;
-  /*   padding-left: 25px;
- */
   text-align: left;
 `;
 
@@ -63,7 +61,6 @@ export const NameCeil = styled.td`
   gap: 15px;
   padding: 10px 15px;
   text-align: center;
-  /*   justify-content: center; */
 `;
 
 export const ActionCeil = styled.td`
